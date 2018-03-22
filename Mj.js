@@ -8,6 +8,8 @@ window.onload = function(){
 	// $().getTagname("p").css("color","blue").click(function(){
 	// 	alert(this.innerHTML)
 	// });;
-	$(".div").find(".spans").css("color","red");
-	
+	$("#box").click(function(){
+		alert($(this))
+	})
+	$("div").find("#divspan").css("color","red")
 }

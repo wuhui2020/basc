@@ -6,28 +6,32 @@ $ = function(agrs){
 
 function Basc(agrs){
 	this.element = [];//创建一个数组
-	switch(agrs.charAt(0)){
-		case "#":
-			this.element.push( this.getId( agrs.substring(1) ) );
-			return this;
-		break;
-		case ".":
-			tags = this.getClass(agrs.substring(1));
-			for(var i = 0; i < tags.length; i++){
-				if(tags[i].className == agrs.substring(1)){
-					this.element.push(tags[i])
-				}
-			};
-			return this;
-		break;
-		default:
-			tags = this.getTagname(agrs);
-			for(var i = 0; i < tags.length; i++ ){
-				this.element.push(tags[i]);
-			};
-			return this;
+	if(typeof(agrs) == "object"){
+		this.element.push(agrs);
+		return this;
+	}else if(typeof(agrs) == "string"){
+		switch(agrs.charAt(0)){
+			case "#":
+				this.element.push( this.getId( agrs.substring(1) ) );
+				return this;
+			break;
+			case ".":
+				tags = this.getClass(agrs.substring(1));
+				for(var i = 0; i < tags.length; i++){
+					if(tags[i].className == agrs.substring(1)){
+						this.element.push(tags[i])
+					}
+				};
+				return this;
+			break;
+			default:
+				tags = this.getTagname(agrs);
+				for(var i = 0; i < tags.length; i++ ){
+					this.element.push(tags[i]);
+				};
+				return this;
+		}
 	}
-	
 }
 
 //获取ID
@@ -71,6 +75,7 @@ function Basc(agrs){
 		var childNode = [];
 		switch(elem.charAt(0)){
 			case "#":
+				childNode.push(this.getId( elem.substring(1) ) );
 			break;
 			case ".":
 				tags = this.getClass(elem.substring(1),this.element[i]);
