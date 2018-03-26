@@ -1,0 +1,8 @@
+#box{
+	font-size:20px;
+}
+#div-drag{
+	position:absolute;
+	left:200px;
+	top:200px;
+}

@@ -94,13 +94,26 @@ function Basc(agrs){
 		return this;
 	}
 
-//设置css样式
+//设置和获取css样式
 	Basc.prototype.css = function(attr,value){
-		for(var i = 0; i<this.element.length; i++){
-			this.element[i].style[attr] = value;
+		if(arguments.length == 1){
+			for(var i = 0; i<this.element.length; i++){
+				if(window.getComputedStyle){
+					return getComputedStyle(this.element[i],null)[attr]; //W3C
+				}else if(window.currentStyle){
+					return currentStyle[attr];   //IE 
+				}
+			}
+			return this;
+		}else if(arguments.length == 2){
+			for(var i = 0; i<this.element.length; i++){
+				this.element[i].style[attr] = value;
+			}
+			return this;
 		}
-		return this;
+		
 	}
+
 
 //点击事件
 	Basc.prototype.click = function(fn){
@@ -110,18 +123,58 @@ function Basc(agrs){
 		return this;
 	}
 
-//获取html
-	Basc.prototype.html = function(){
-		console.log(this)
-		for(var i = 0; i < this.element.length; i++){
-			return this.element[i].innerHTML;
+//获取和设置html
+	Basc.prototype.html = function(args){
+		if(typeof(args) =="string" && args != undefined){
+			for(var i = 0; i < this.element.length;i++){
+				this.element[i].innerText = args
+			}
+		}else{
+			for(var i = 0; i < this.element.length; i++){
+				return this.element[i].innerHTML;
+			}
 		}
 		return this.element;
 	}
-//设置html
-	Basc.prototype.setHtml = function(text){
-		for(var i = 0; i < this.element.length;i++){
-			this.element[i].innerText = text
+
+
+	Basc.prototype.drag = function(dragParent){
+		var  e  = this.getEvent(event)
+		var _this;
+
+		for(var i = 0; i < this.element.length; i++){
+			_this = $(this).element[i];
 		}
-		return this;
+		console.log(_this)
+		var thisParents = dragParent.element[0];
+		var lx = e.clientX - thisParents.offsetLeft
+		var ly = e.clientY - thisParents.offsetTop
+		// console.log(_this.clientWidth)
+		document.onmouseover = function(e){
+			var e = e || window.e;
+			// console.log(e.clientX - lx)
+			if(e.clientX - lx <= 0){
+				thisParents.style.left = 0 +"px"
+			}else if(e.clientX + _this.clientWidth -lx > window.innerWidth){
+				thisParents.style.left = window.innerWidth -_this.clientWidth +"px"
+			}else{
+				thisParents.style.left = e.clientX -lx +"px"
+			}
+
+			if(e.clientY - ly <= 0){
+				thisParents.style.top = 0 +"px"
+			}else if(e.clientY + _this.clientHeight -lx > window.innerHeight){
+				thisParents.style.top = window.innerHeight -_this.clientHeight +"px"
+			}else{
+				thisParents.style.top = e.clientY -lx +"px"
+			}
+		}
+		document.onmouseup = function(){
+			document.onmouseover = null;
+			document.onmouseup = null;
+		}
+	}
+
+	Basc.prototype.getEvent = function(event){
+		return  event || window.event;
 	}
