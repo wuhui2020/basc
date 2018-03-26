@@ -18,7 +18,7 @@ window.onload = function(){
 	// $("div").find("#divspan").css("color","red")
 	// console.log(document.getElementById("drag-head"))
 	// console.log($("#drag-head").element[0])
-	$("#drag-head").drag($("#div-drag"));
+	$("#div-drag").drag();
 
 	// $("#drag-head").element[0].onmousedown = function(e){
 

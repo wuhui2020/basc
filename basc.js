@@ -138,43 +138,46 @@ function Basc(agrs){
 	}
 
 
-	Basc.prototype.drag = function(dragParent){
-		var  e  = this.getEvent(event)
-		var _this;
+	Basc.prototype.drag = function(){
 
 		for(var i = 0; i < this.element.length; i++){
-			_this = $(this).element[i];
-		}
-		console.log(_this)
-		var thisParents = dragParent.element[0];
-		var lx = e.clientX - thisParents.offsetLeft
-		var ly = e.clientY - thisParents.offsetTop
-		// console.log(_this.clientWidth)
-		document.onmouseover = function(e){
-			var e = e || window.e;
-			// console.log(e.clientX - lx)
-			if(e.clientX - lx <= 0){
-				thisParents.style.left = 0 +"px"
-			}else if(e.clientX + _this.clientWidth -lx > window.innerWidth){
-				thisParents.style.left = window.innerWidth -_this.clientWidth +"px"
-			}else{
-				thisParents.style.left = e.clientX -lx +"px"
-			}
+			elements = $(this).element[i].element[0];
+			// console.log(elements)
+			elements.onmousedown = function(){
+				var e = $().getEvent(event);
 
-			if(e.clientY - ly <= 0){
-				thisParents.style.top = 0 +"px"
-			}else if(e.clientY + _this.clientHeight -lx > window.innerHeight){
-				thisParents.style.top = window.innerHeight -_this.clientHeight +"px"
-			}else{
-				thisParents.style.top = e.clientY -lx +"px"
+				var lx = e.clientX - elements.offsetLeft
+				var ly = e.clientY - elements.offsetTop
+				// console.log(lx)
+
+				document.onmouseover = function(){
+					e = $().getEvent(event);
+					// console.log(e.clientX - lx)
+					if(e.clientX - lx <= 0){
+						elements.style.left = 0 +"px"
+					}else if(e.clientX + elements.clientWidth -lx > window.innerWidth){
+						elements.style.left = window.innerWidth -elements.clientWidth +"px"
+					}else{
+						elements.style.left = e.clientX -lx +"px"
+					}
+
+					if(e.clientY - ly <= 0){
+						elements.style.top = 0 +"px"
+					}else if(e.clientY + elements.clientHeight -lx > window.innerHeight){
+						elements.style.top = window.innerHeight -elements.clientHeight +"px"
+					}else{
+						elements.style.top = e.clientY -lx +"px"
+					}
+				}
+
+				document.onmouseup = function(){
+					document.onmouseover = null;
+					document.onmouseup = null;
+				}	
 			}
-		}
-		document.onmouseup = function(){
-			document.onmouseover = null;
-			document.onmouseup = null;
 		}
 	}
 
 	Basc.prototype.getEvent = function(event){
-		return  event || window.event;
+		return e =  event || window.event;
 	}
