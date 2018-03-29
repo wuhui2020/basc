@@ -3,11 +3,10 @@ $ = function(agrs){
 	return new Basc(agrs);  //每次都new出一个新的对象
 };
 
-
 function Basc(agrs){
 	this.element = [];//创建一个数组
 	if(typeof(agrs) == "object"){
-		this.element.push(agrs);
+		this.element[0] = agrs;
 		return this;
 	}else if(typeof(agrs) == "string"){
 		switch(agrs.charAt(0)){
@@ -137,47 +136,49 @@ function Basc(agrs){
 		return this.element;
 	}
 
-
+//拖拽	
+// 		标准：　　阻止默认行为
+// 　　 非标准ie：　　设置全局捕获setCapture()（跟事件的捕获不是一个概念）
 	Basc.prototype.drag = function(){
-
 		for(var i = 0; i < this.element.length; i++){
-			elements = $(this).element[i].element[0];
-			// console.log(elements)
-			elements.onmousedown = function(){
-				var e = $().getEvent(event);
-
-				var lx = e.clientX - elements.offsetLeft
-				var ly = e.clientY - elements.offsetTop
-				// console.log(lx)
-
-				document.onmouseover = function(){
-					e = $().getEvent(event);
-					// console.log(e.clientX - lx)
+			this.element[i].onmousedown = function(){
+				var _this = this;
+				var e = getEvent(event);
+				var lx = e.clientX - _this.offsetLeft
+				var ly = e.clientY - _this.offsetTop
+				if ( _this.setCapture ) {
+	                _this.setCapture();
+	            };
+				document.onmousemove = function(){
+					e = getEvent(event);
 					if(e.clientX - lx <= 0){
-						elements.style.left = 0 +"px"
-					}else if(e.clientX + elements.clientWidth -lx > window.innerWidth){
-						elements.style.left = window.innerWidth -elements.clientWidth +"px"
+						_this.style.left = 0 +"px"
+					}else if(e.clientX + _this.clientWidth -lx > window.innerWidth){
+						_this.style.left = window.innerWidth -_this.clientWidth +"px"
 					}else{
-						elements.style.left = e.clientX -lx +"px"
+						_this.style.left = e.clientX -lx +"px"
 					}
-
 					if(e.clientY - ly <= 0){
-						elements.style.top = 0 +"px"
-					}else if(e.clientY + elements.clientHeight -lx > window.innerHeight){
-						elements.style.top = window.innerHeight -elements.clientHeight +"px"
+						_this.style.top = 0 +"px"
+					}else if(e.clientY + _this.clientHeight -lx > window.innerHeight){
+						_this.style.top = window.innerHeight -_this.clientHeight +"px"
 					}else{
-						elements.style.top = e.clientY -lx +"px"
+						_this.style.top = e.clientY -ly +"px"
 					}
-				}
+				};
 
 				document.onmouseup = function(){
-					document.onmouseover = null;
-					document.onmouseup = null;
-				}	
+					this.onmousemove = null;
+					this.onmouseup = null;
+					if ( _this.releaseCapture ) {
+                    	_this.releaseCapture();
+                	}
+				};	
+				return false;
 			}
 		}
 	}
 
-	Basc.prototype.getEvent = function(event){
+	function getEvent(event){
 		return e =  event || window.event;
-	}
+	};
