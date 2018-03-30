@@ -136,6 +136,23 @@ function Basc(agrs){
 		return this.element;
 	}
 
+//现代事件绑定
+function addEvent(obj,Events,func){
+	for(var i = 0; i < obj.element.length; i++){
+		// attachEvent()添加事件   //IE
+		// detachEvent()删除事件
+		// addEventListener       //W3C
+		// removeEventListener
+		if(obj.element[i].addEventListener){
+			obj.element[i].addEventListener(Events,func,false);//false捕获
+			// obj.element[i]["on"+Events] = func;
+		}else if(obj.element[i].attachEvent){
+			obj.element[i].attachEvent('on'+Events,func)
+		}
+		
+	}
+}	
+
 //拖拽	
 // 		标准：　　阻止默认行为
 // 　　 非标准ie：　　设置全局捕获setCapture()（跟事件的捕获不是一个概念）
@@ -178,7 +195,34 @@ function Basc(agrs){
 			}
 		}
 	}
-
+//获取event对像
 	function getEvent(event){
 		return e =  event || window.event;
 	};
+
+//排序
+	// Basc.prototype.sort = function(arr){
+	// 	for(var i = 0;i < arr.length;i++){
+	// 		for(var j = 0 ; j < arr.length - (1 + i); j++){
+	// 			if(arr[j] > arr[j+1]){
+	// 				var temp = arr[j]
+	// 				arr[j] = arr[j+1]
+	// 				arr[j+1] = temp;
+	// 			}
+	// 		}
+	// 	};
+	// 	return arr;
+	// };
+
+	function sort(arr){
+		for(var i = 0;i < arr.length;i++){
+			for(var j = 0 ; j < arr.length - (1 + i); j++){
+				if(arr[j] > arr[j+1]){
+					var temp = arr[j]
+					arr[j] = arr[j+1]
+					arr[j+1] = temp;
+				}
+			}
+		};
+		return arr;
+	}
