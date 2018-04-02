@@ -145,11 +145,19 @@ function addEvent(obj,Events,func){
 		// removeEventListener
 		if(obj.element[i].addEventListener){
 			obj.element[i].addEventListener(Events,func,false);//false捕获
-			// obj.element[i]["on"+Events] = func;
 		}else if(obj.element[i].attachEvent){
 			obj.element[i].attachEvent('on'+Events,func)
 		}
-		
+	}
+}
+//删除现代事件绑定
+function removeEvent(obj,Events,func){
+	for(var i = 0; i < obj.element.length; i++){
+		if(obj.element[i].removeEventListener){
+			obj.element[i].removeEventListener(Events,func,false);//false捕获
+		}else if(obj.element[i].detacEvent){
+			obj.element[i].detacEvent('on'+Events,func)
+		}
 	}
 }	
 
