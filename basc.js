@@ -11,13 +11,17 @@ function Basc(agrs){
 	}else if(typeof(agrs) == "string"){
 		switch(agrs.charAt(0)){
 			case "#":
-				this.element.push( this.getId( agrs.substring(1) ) );
+				tags = this.getId( agrs.substring(1) );
+				//tags.index 元素下标索引
+				tags.index = 0;                           
+				this.element.push(tags);
 				return this;
 			break;
 			case ".":
 				tags = this.getClass(agrs.substring(1));
 				for(var i = 0; i < tags.length; i++){
 					if(tags[i].className == agrs.substring(1)){
+						tags[i].index = i;
 						this.element.push(tags[i])
 					}
 				};
@@ -26,6 +30,7 @@ function Basc(agrs){
 			default:
 				tags = this.getTagname(agrs);
 				for(var i = 0; i < tags.length; i++ ){
+					tags[i].index = i;
 					this.element.push(tags[i]);
 				};
 				return this;
@@ -74,23 +79,59 @@ function Basc(agrs){
 		var childNode = [];
 		switch(elem.charAt(0)){
 			case "#":
-				childNode.push(this.getId( elem.substring(1) ) );
+				tags = this.getId( elem.substring(1) );
+				tags.index = 0;
+				childNode.push(tags);
 			break;
 			case ".":
 				tags = this.getClass(elem.substring(1),this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
+					tags[i].index = i;
 					childNode.push(tags[i]);
 				};
 			break;
 			default:
 				tags = this.getTagname(elem,this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
+					tags[i].index = i;
 					childNode.push(tags[i]);
 				};
 			break;
 		};
 		this.element = childNode;
 		return this;
+	}
+//获取父级元素
+	Basc.prototype.parentNode = function(){
+		for(var i = 0; i < this.element.length; i++){
+			parentNode = this.element[i].parentNode;
+		}
+		return parentNode;
+	}
+//获取父级元素所有子节点
+	Basc.prototype.childNodes = function(){
+		var temp = []
+		for(var i = 0; i < this.parentNode().childNodes.length; i++){
+			if(this.parentNode().childNodes[i].tagName != undefined){
+				temp.push(this.parentNode().childNodes[i])
+			}
+		}
+		this.element = temp;
+		return this;
+	}
+
+//获取第几个元素
+	Basc.prototype.eq = function(num){
+		var temp = this.element[num]
+		this.element =[];
+		this.element.push(temp);
+		return this;
+	}
+
+//获取元素索引
+	Basc.prototype.index = function(){
+		this.element.index = this.element[0].index;
+		return this.element.index;
 	}
 
 //设置和获取css样式
@@ -121,6 +162,13 @@ function Basc(agrs){
 		}
 		return this;
 	}
+//点击事件
+	Basc.prototype.mouseover = function(fn){
+		for(var i = 0; i < this.element.length; i++ ){
+			this.element[i].onmouseover = fn;
+		}
+		return this;
+	}
 
 //获取和设置html
 	Basc.prototype.html = function(args){
@@ -135,6 +183,14 @@ function Basc(agrs){
 		}
 		return this.element;
 	}
+
+	Basc.prototype.hover =function(fn,fn1){
+		for(var i = 0; i < this.element.length; i++){
+			addEvent(this.element[i],"onmouseover",fn);
+			addEvent(this.element[i],"onmouseout",fn1);
+		}
+	}
+
 
 //现代事件绑定
 function addEvent(obj,Events,func){
