@@ -63,7 +63,7 @@ function Basc(agrs){
 				case ".":
 					tags = this.getClass(agrs.substring(1));
 					for(var i = 0; i < tags.length; i++){
-						if(tags[i].className == agrs.substring(1)){
+						if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs.substring(1)){
 							tags[i].index = i;
 							this.element.push(tags[i])
 						}
@@ -103,11 +103,10 @@ Basc.prototype.getTagname = function(agrs,parentNode){
 Basc.prototype.getClass = function(agrs,parentNode){
 	var node = '';
 	parentNode != undefined?node = parentNode:node = document;
-	console.log(node)
 	var temps = [];
 	tags = node.getElementsByTagName('*');
 	for(var i = 0; i < tags.length; i++){
-		if(tags[i].className == agrs){
+		if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs){
 			temps.push(tags[i])
 		}
 	};
@@ -195,6 +194,16 @@ Basc.prototype.css = function(attr,value){
 		}
 		return this;
 	}
+}
+
+//添加css
+Basc.prototype.addClass = function(classname){
+	for(var i = 0; i < this.element.length; i++){
+		if(!this.element[i].className.match(new RegExp('(\s*|^)'+classname+'(\s*|$)','g'))){
+			this.element[i].className += " "+classname;
+		}
+	}
+	return this
 }
 
 //点击事件
