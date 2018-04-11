@@ -9,6 +9,8 @@ function Basc(agrs){
 		this.element[0] = agrs;
 		return this;
 	}else if(typeof(agrs) == "string"){
+		var machclass = [];
+		var onlyclass = [];
 		if(agrs.indexOf(" ") != -1){
 			var element = agrs.split(" ");
 			var childElement = [];
@@ -19,10 +21,8 @@ function Basc(agrs){
 				}
 				switch(element[i].charAt(0)){
 					case "#":
-						childElement = [];
-						tags = this.getId( element[i].substring(1));
-						tags.index = 0;                           
-						childElement.push(tags);
+						childElement = [];                   
+						childElement.push( this.getId( element[i].substring(1) ) );
 						node = childElement;
 					break;
 					case ".":
@@ -30,20 +30,29 @@ function Basc(agrs){
 						for(var k = 0; k < node.length; k++){
 							tags = this.getClass(element[i].substring(1),node[k]);
 							for(var j = 0; j < tags.length; j++){
-								if(tags[j].className == element[i].substring(1)){
-									tags[j].index = i;
-									childElement.push(tags[j])
-								}
+								if(tags[j].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
+									var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
+									for(var j = 0; j < classArr.length; j++){
+										if(classArr[j] == agrs.substring(1)){
+											machclass.push(tags[i]);
+										}
+									};
+									node = machclass;
+								}else{
+									if(tags[j].className == element[i].substring(1)){
+										onlyclass.push(tags[j]);
+									}
+									node = onlyclass;
+								};
 							};
 						}
-						node = childElement;
+						childElement = machclass.concat(onlyclass);
 					break;
 					default:
 						childElement = [];
 						for(var k = 0; k < node.length; k++){
-							tags = this.getTagname(element[i],node[k]);
+							tags = this.getTagName(element[i],node[k]);
 							for(var j = 0; j < tags.length; j++ ){
-								tags[j].index = j;
 								childElement.push(tags[j]);
 							};
 						}
@@ -54,64 +63,87 @@ function Basc(agrs){
 			return this;
 		}else{
 			switch(agrs.charAt(0)){
-				case "#":
-					tags = this.getId( agrs.substring(1) );
-					tags.index = 0;                           
-					this.element.push(tags);
+				case "#":                      
+					this.element.push( this.getId( agrs.substring(1) ) );
 					return this;
 				break;
 				case ".":
 					tags = this.getClass(agrs.substring(1));
 					for(var i = 0; i < tags.length; i++){
-						if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs.substring(1)){
-							tags[i].index = i;
-							this.element.push(tags[i])
-						}
+						if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
+							var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
+							for(var j = 0; j < classArr.length; j++){
+								if(classArr[j] == agrs.substring(1)){
+									machclass.push(tags[i]);
+								}
+							};
+						}else{
+							if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs.substring(1)){
+								onlyclass.push(tags[i]);
+							}
+						};
 					};
+					this.element = machclass.concat(onlyclass);
 					return this;
 				break;
 				default:
-					tags = this.getTagname(agrs);
+					tags = this.getTagName(agrs);
 					for(var i = 0; i < tags.length; i++ ){
-						tags[i].index = i;
 						this.element.push(tags[i]);
 					};
 					return this;
 			}
 		}
 	}
-}
+};
 
 //获取ID
 Basc.prototype.getId = function(agrs){
-	return document.getElementById(agrs);
-}
+	var temps = document.getElementById(agrs);
+	temps.index = 0;
+	return temps;
+};
 
 //获取Tagname
-Basc.prototype.getTagname = function(agrs,parentNode){
+Basc.prototype.getTagName = function(agrs,parentNode){
 	var node = '';
 	parentNode != undefined?node = parentNode:node = document;
 	var temps = [];
-	tags = node.getElementsByTagName(agrs);
+	var tags = node.getElementsByTagName(agrs);
 	for(var i = 0; i < tags.length; i++ ){
+		tags[i].index = i;
 		temps.push(tags[i]);
 	}
 	return temps;
-}
+};
 
 //获取className
 Basc.prototype.getClass = function(agrs,parentNode){
 	var node = '';
 	parentNode != undefined?node = parentNode:node = document;
 	var temps = [];
-	tags = node.getElementsByTagName('*');
+	var machclass = [];
+	var onlyclass = [];
+	var tags = node.getElementsByTagName('*');
 	for(var i = 0; i < tags.length; i++){
-		if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs){
-			temps.push(tags[i])
-		}
+		if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
+			var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
+			for(var j = 0; j < classArr.length; j++){
+				if(classArr[j] == agrs){
+					tags[i].index = i;
+					machclass.push(tags[i]);
+				}
+			};
+		}else{
+			if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs){
+				tags[i].index = i;
+				onlyclass.push(tags[i]);
+			}
+		};
 	};
+	temps = machclass.concat(onlyclass);
 	return temps;
-}
+};
 
 //find查找元素
 Basc.prototype.find = function(elem){
@@ -119,29 +151,27 @@ Basc.prototype.find = function(elem){
 	for(var i = 0; i < this.element.length; i++){
 		switch(elem.charAt(0)){
 			case "#":
-				tags = this.getId( elem.substring(1) );
-				tags.index = 0;
+				var tags = this.getId( elem.substring(1) );
 				childNode.push(tags);
 			break;
 			case ".":
-				tags = this.getClass(elem.substring(1),this.element[i]);
+				var tags = this.getClass(elem.substring(1),this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
-					tags[i].index = i;
 					childNode.push(tags[i]);
 				};
 			break;
 			default:
-				tags = this.getTagname(elem,this.element[i]);
+				var tags = this.getTagName(elem,this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
-					tags[i].index = i;
 					childNode.push(tags[i]);
 				};
+				return this;
 			break;
 		};
 	}
 	this.element = childNode;
 	return this;
-}
+};
 
 //获取父级元素
 Basc.prototype.parentNode = function(){
@@ -149,7 +179,7 @@ Basc.prototype.parentNode = function(){
 		parentNode = this.element[i].parentNode;
 	}
 	return parentNode;
-}
+};
 
 //获取父级元素所有子节点
 Basc.prototype.childNodes = function(){
@@ -161,7 +191,7 @@ Basc.prototype.childNodes = function(){
 	}
 	this.element = temp;
 	return this;
-}
+};
 
 //获取第几个元素
 Basc.prototype.eq = function(num){
@@ -169,13 +199,15 @@ Basc.prototype.eq = function(num){
 	this.element =[];
 	this.element.push(temp);
 	return this;
-}
+};
 
 //获取元素索引
 Basc.prototype.index = function(){
-	this.element.index = this.element[0].index;
-	return this.element.index;
-}
+	// for(var i = 0; i < this.element.length; i++){
+		return this.element[0].index;
+	// }
+	
+};
 
 //设置和获取css样式
 Basc.prototype.css = function(attr,value){
@@ -194,7 +226,7 @@ Basc.prototype.css = function(attr,value){
 		}
 		return this;
 	}
-}
+};
 
 //添加css
 Basc.prototype.addClass = function(classname){
@@ -204,7 +236,7 @@ Basc.prototype.addClass = function(classname){
 		}
 	}
 	return this
-}
+};
 
 //点击事件
 Basc.prototype.click = function(fn){
@@ -212,7 +244,7 @@ Basc.prototype.click = function(fn){
 		this.element[i].onclick = fn;
 	}
 	return this;
-}
+};
 
 //点击事件
 Basc.prototype.mouseover = function(fn){
@@ -220,7 +252,7 @@ Basc.prototype.mouseover = function(fn){
 		this.element[i].onmouseover = fn;
 	}
 	return this;
-}
+};
 
 //获取和设置html
 Basc.prototype.html = function(args){
@@ -234,13 +266,27 @@ Basc.prototype.html = function(args){
 		}
 	}
 	return this.element;
-}
+};
 
 //封装hover
 Basc.prototype.hover =function(fn,fn1){
 	addEvent(this,"mouseover",fn);
 	addEvent(this,"mouseout",fn1);
-}
+};
+
+//封装show
+Basc.prototype.show =function(){
+	for(var i = 0; i < this.element.length; i++){
+		this.element[i].style.display = "block";
+	}
+};
+
+//封装hide
+Basc.prototype.hide =function(){
+	for(var i = 0; i < this.element.length; i++){
+		this.element[i].style.display = "none";
+	}
+};
 
 //现代事件绑定
 function addEvent(obj,Events,func){
@@ -255,7 +301,7 @@ function addEvent(obj,Events,func){
 			obj.element[i].attachEvent('on'+Events,func)
 		}
 	}
-}
+};
 //删除现代事件绑定
 function removeEvent(obj,Events,func){
 	for(var i = 0; i < obj.element.length; i++){
@@ -265,7 +311,7 @@ function removeEvent(obj,Events,func){
 			obj.element[i].detacEvent('on'+Events,func)
 		}
 	}
-}	
+};	
 
 //拖拽	
 // 		标准：　　阻止默认行为
@@ -308,7 +354,7 @@ Basc.prototype.drag = function(){
 			return false;
 		}
 	}
-}
+};
 
 //获取event对像
 function getEvent(event){
@@ -341,4 +387,4 @@ function sort(arr){
 		}
 	};
 	return arr;
-}
+};
