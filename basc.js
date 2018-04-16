@@ -208,10 +208,7 @@ Basc.prototype.eq = function(num){
 
 //获取元素索引
 Basc.prototype.index = function(){
-	// for(var i = 0; i < this.element.length; i++){
-		return this.element[0].index;
-	// }
-	
+	return this.element[0].index;
 };
 
 //设置和获取css样式
@@ -233,7 +230,7 @@ Basc.prototype.css = function(attr,value){
 	}
 };
 
-//添加css
+//添加class
 Basc.prototype.addClass = function(classname){
 	for(var i = 0; i < this.element.length; i++){
 		if(!this.element[i].className.match(new RegExp('(\s*|^)'+classname+'(\s*|$)','g'))){
@@ -243,6 +240,15 @@ Basc.prototype.addClass = function(classname){
 	return this
 };
 
+//删除class
+Basc.prototype.removeClass = function(classname){
+	for(var i = 0; i < this.element.length; i++){
+		if(this.element[i].className.match(new RegExp('(\s*|^)'+classname+'(\s*|$)','g'))){
+			this.element[i].className = this.element[i].className.replace(classname,'')
+		}
+	}
+	return this
+}
 //点击事件
 Basc.prototype.click = function(fn){
 	for(var i = 0; i < this.element.length; i++ ){
@@ -294,26 +300,26 @@ Basc.prototype.hide =function(){
 };
 
 //现代事件绑定
-function addEvent(obj,Events,func){
+function addEvent(obj,Events,fn){
 	// for(var i = 0; i < obj.element.length; i++){
 		// attachEvent()添加事件   //IE
 		// detachEvent()删除事件
 		// addEventListener       //W3C
 		// removeEventListener
 		if(obj.addEventListener){
-			obj.addEventListener(Events,func,false);//false捕获
+			obj.addEventListener(Events,fn,false);//false捕获
 		}else if(obj.element[i].attachEvent){
-			obj.attachEvent('on'+Events,func)
+			obj.attachEvent('on'+Events,fn)
 		}
 	// }
 };
 //删除现代事件绑定
-function removeEvent(obj,Events,func){
+function removeEvent(obj,Events,fn){
 	// for(var i = 0; i < obj.element.length; i++){
 		if(obj.removeEventListener){
-			obj.removeEventListener(Events,func,false);//false捕获
+			obj.removeEventListener(Events,fn,false);//false捕获
 		}else if(obj.detacEvent){
-			obj.detacEvent('on'+Events,func)
+			obj.detacEvent('on'+Events,fn)
 		}
 	// }
 };	
