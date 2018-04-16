@@ -193,7 +193,12 @@ Basc.prototype.childNodes = function(){
 	return this;
 };
 
-//获取第几个元素
+//获取第几个元素 并返当前元素
+Basc.prototype.getElement = function(num){
+	return this.element[num];
+};
+
+//获取第几个元素 并返回Basc对像
 Basc.prototype.eq = function(num){
 	var temp = this.element[num]
 	this.element =[];
@@ -290,71 +295,28 @@ Basc.prototype.hide =function(){
 
 //现代事件绑定
 function addEvent(obj,Events,func){
-	for(var i = 0; i < obj.element.length; i++){
+	// for(var i = 0; i < obj.element.length; i++){
 		// attachEvent()添加事件   //IE
 		// detachEvent()删除事件
 		// addEventListener       //W3C
 		// removeEventListener
-		if(obj.element[i].addEventListener){
-			obj.element[i].addEventListener(Events,func,false);//false捕获
+		if(obj.addEventListener){
+			obj.addEventListener(Events,func,false);//false捕获
 		}else if(obj.element[i].attachEvent){
-			obj.element[i].attachEvent('on'+Events,func)
+			obj.attachEvent('on'+Events,func)
 		}
-	}
+	// }
 };
 //删除现代事件绑定
 function removeEvent(obj,Events,func){
-	for(var i = 0; i < obj.element.length; i++){
-		if(obj.element[i].removeEventListener){
-			obj.element[i].removeEventListener(Events,func,false);//false捕获
-		}else if(obj.element[i].detacEvent){
-			obj.element[i].detacEvent('on'+Events,func)
+	// for(var i = 0; i < obj.element.length; i++){
+		if(obj.removeEventListener){
+			obj.removeEventListener(Events,func,false);//false捕获
+		}else if(obj.detacEvent){
+			obj.detacEvent('on'+Events,func)
 		}
-	}
+	// }
 };	
-
-//拖拽	
-// 		标准：　　阻止默认行为
-// 　　 非标准ie：　　设置全局捕获setCapture()（跟事件的捕获不是一个概念）
-Basc.prototype.drag = function(){
-	for(var i = 0; i < this.element.length; i++){
-		this.element[i].onmousedown = function(){
-			var _this = this;
-			var e = getEvent(event);
-			var lx = e.clientX - _this.offsetLeft
-			var ly = e.clientY - _this.offsetTop
-			if ( _this.setCapture ) {
-                _this.setCapture();
-            };
-			document.onmousemove = function(){
-				e = getEvent(event);
-				if(e.clientX - lx <= 0){
-					_this.style.left = 0 +"px"
-				}else if(e.clientX + _this.clientWidth -lx > window.innerWidth){
-					_this.style.left = window.innerWidth -_this.clientWidth +"px"
-				}else{
-					_this.style.left = e.clientX -lx +"px"
-				}
-				if(e.clientY - ly <= 0){
-					_this.style.top = 0 +"px"
-				}else if(e.clientY + _this.clientHeight -lx > window.innerHeight){
-					_this.style.top = window.innerHeight -_this.clientHeight +"px"
-				}else{
-					_this.style.top = e.clientY -ly +"px"
-				}
-			};
-
-			document.onmouseup = function(){
-				this.onmousemove = null;
-				this.onmouseup = null;
-				if ( _this.releaseCapture ) {
-                	_this.releaseCapture();
-            	}
-			};	
-			return false;
-		}
-	}
-};
 
 //获取event对像
 function getEvent(event){
@@ -388,3 +350,8 @@ function sort(arr){
 	};
 	return arr;
 };
+
+Basc.prototype.extend = function(fnName,func){
+	Basc.prototype[fnName] = func;
+}
+
