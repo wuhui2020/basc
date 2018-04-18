@@ -12,23 +12,23 @@ function Basc(agrs){
 		var machclass = [];
 		var onlyclass = [];
 		if(agrs.indexOf(" ") != -1){
-			var element = agrs.split(" ");
+			var elements = agrs.split(" ");
 			var childElement = [];
 			var node = [];
-			for(var i = 0; i < element.length; i++){
+			for(var i = 0; i < elements.length; i++){
 				if(node.length == 0){
 					node.push(document);
 				}
-				switch(element[i].charAt(0)){
+				switch(elements[i].charAt(0)){
 					case "#":
 						childElement = [];                   
-						childElement.push( this.getId( element[i].substring(1) ) );
+						childElement.push( this.getId( elements[i].substring(1) ) );
 						node = childElement;
 					break;
 					case ".":
 						childElement = [];
 						for(var k = 0; k < node.length; k++){
-							tags = this.getClass(element[i].substring(1),node[k]);
+							tags = this.getClass(elements[i].substring(1),node[k]);
 							for(var j = 0; j < tags.length; j++){
 								if(tags[j].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
 									var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
@@ -39,7 +39,7 @@ function Basc(agrs){
 									};
 									node = machclass;
 								}else{
-									if(tags[j].className == element[i].substring(1)){
+									if(tags[j].className == elements[i].substring(1)){
 										onlyclass.push(tags[j]);
 									}
 									node = onlyclass;
@@ -51,7 +51,7 @@ function Basc(agrs){
 					default:
 						childElement = [];
 						for(var k = 0; k < node.length; k++){
-							tags = this.getTagName(element[i],node[k]);
+							tags = this.getTagName(elements[i],node[k]);
 							for(var j = 0; j < tags.length; j++ ){
 								childElement.push(tags[j]);
 							};
@@ -94,8 +94,16 @@ function Basc(agrs){
 					return this;
 			}
 		}
+	}else if(typeof agrs == 'function'){
+		this.onload(agrs);
 	}
 };
+
+Basc.prototype.onload = function(fn){
+	window.onload = function(){
+		fn();
+	}
+}
 
 //获取ID
 Basc.prototype.getId = function(agrs){

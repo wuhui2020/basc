@@ -1,7 +1,6 @@
-Basc.prototype.extend("drag",function(tags){
-	var tagname = tags;
+Basc.prototype.extend("drag",function(){
+	var tagname = arguments;//arguments是传过来的参数;
 	for(var i = 0; i < this.element.length; i++){
-		
 		addEvent(this.element[i],"mousedown",down);
 		function down(){
 			var _this = this;
