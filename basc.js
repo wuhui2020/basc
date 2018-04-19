@@ -1,5 +1,4 @@
-
-$ = function(agrs){
+;$ = function(agrs){
 	return new Basc(agrs);  //每次都new出一个新的对象
 };
 
@@ -245,7 +244,7 @@ Basc.prototype.addClass = function(classname){
 			this.element[i].className += " "+classname;
 		}
 	}
-	return this
+	return this;
 };
 
 //删除class
@@ -284,13 +283,16 @@ Basc.prototype.html = function(args){
 			return this.element[i].innerHTML;
 		}
 	}
-	return this.element;
+	return this;
 };
 
 //封装hover
 Basc.prototype.hover =function(fn,fn1){
-	addEvent(this,"mouseover",fn);
-	addEvent(this,"mouseout",fn1);
+	for(var i = 0; i < this.element.length; i++){
+		addEvent(this.element[i],"mouseover",fn);
+		addEvent(this.element[i],"mouseout",fn1);
+	}
+	return this;
 };
 
 //封装show
@@ -298,6 +300,7 @@ Basc.prototype.show =function(){
 	for(var i = 0; i < this.element.length; i++){
 		this.element[i].style.display = "block";
 	}
+	return this;
 };
 
 //封装hide
@@ -305,21 +308,18 @@ Basc.prototype.hide =function(){
 	for(var i = 0; i < this.element.length; i++){
 		this.element[i].style.display = "none";
 	}
+	return this;
 };
 
 //现代事件绑定
 function addEvent(obj,Events,fn){
-	// for(var i = 0; i < obj.element.length; i++){
-		// attachEvent()添加事件   //IE
-		// detachEvent()删除事件
-		// addEventListener       //W3C
-		// removeEventListener
-		if(obj.addEventListener){
-			obj.addEventListener(Events,fn,false);//false捕获
-		}else if(obj.element[i].attachEvent){
-			obj.attachEvent('on'+Events,fn)
-		}
-	// }
+	// attachEvent()添加事件  detachEvent()删除事件 //IE
+	// addEventListener  removeEventListener     //W3C
+	if(obj.addEventListener){
+		obj.addEventListener(Events,fn,false);//false捕获
+	}else if(obj.attachEvent){
+		obj.attachEvent('on'+Events,fn)
+	}
 };
 //删除现代事件绑定
 function removeEvent(obj,Events,fn){
@@ -365,6 +365,7 @@ function sort(arr){
 	return arr;
 };
 
+//扩展
 Basc.prototype.extend = function(fnName,func){
 	Basc.prototype[fnName] = func;
 }
