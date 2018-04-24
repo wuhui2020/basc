@@ -7,7 +7,9 @@ $(function(){
 	// $("#p2").click(function(){
 	// 	$("#box").removeClass("box1").removeClass("box").addClass("box2")
 	// })
-	$("#p3 .dspan").css("color","red").addClass("aa").addClass("bb").removeClass("aa")
 
+	// $("#p3 .dspan").css("color","red").addClass("aa").addClass("bb").removeClass("aa")
+	console.log($("#box").attr("divs","aaaa"))
+	$("#box").css("color","red").addClass('a')
 	
 })

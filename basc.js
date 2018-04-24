@@ -220,21 +220,30 @@ Basc.prototype.index = function(){
 
 //设置和获取css样式
 Basc.prototype.css = function(attr,value){
-	if(arguments.length == 1){
-		for(var i = 0; i<this.element.length; i++){
+	for(var i = 0; i<this.element.length; i++){
+		if(arguments.length == 1){
 			if(window.getComputedStyle){
 				return getComputedStyle(this.element[i],null)[attr]; //W3C
 			}else if(window.currentStyle){
 				return currentStyle[attr];   //IE 
 			}
-		}
-		return this;
-	}else if(arguments.length == 2){
-		for(var i = 0; i<this.element.length; i++){
+		}else if(arguments.length == 2){
 			this.element[i].style[attr] = value;
 		}
-		return this;
 	}
+	return this;
+};
+
+//设置和获取属性
+Basc.prototype.attr = function(attr,value){
+	for(var i = 0; i<this.element.length; i++){
+		if(arguments.length == 1){
+			this.element[i].getAttribute(attr);
+		}else if(arguments.length == 2){
+			this.element[i].setAttribute(attr,value);
+		}
+	}
+	return this;
 };
 
 //添加class
@@ -274,12 +283,10 @@ Basc.prototype.mouseover = function(fn){
 
 //获取和设置html
 Basc.prototype.html = function(args){
-	if(typeof(args) =="string" && args != undefined){
-		for(var i = 0; i < this.element.length;i++){
+	for(var i = 0; i < this.element.length;i++){
+		if(typeof(args) =="string" && args != undefined){
 			this.element[i].innerText = args
-		}
-	}else{
-		for(var i = 0; i < this.element.length; i++){
+		}else{
 			return this.element[i].innerHTML;
 		}
 	}
@@ -323,13 +330,11 @@ function addEvent(obj,Events,fn){
 };
 //删除现代事件绑定
 function removeEvent(obj,Events,fn){
-	// for(var i = 0; i < obj.element.length; i++){
-		if(obj.removeEventListener){
-			obj.removeEventListener(Events,fn,false);//false捕获
-		}else if(obj.detacEvent){
-			obj.detacEvent('on'+Events,fn)
-		}
-	// }
+	if(obj.removeEventListener){
+		obj.removeEventListener(Events,fn,false);//false捕获
+	}else if(obj.detacEvent){
+		obj.detacEvent('on'+Events,fn)
+	}
 };	
 
 //获取event对像
