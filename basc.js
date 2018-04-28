@@ -2,6 +2,16 @@
 	return new Basc(agrs);  //每次都new出一个新的对象
 };
 
+//检测浏览器版本
+(function(us){
+	window.browser;
+	var Browser;
+	( Browser = us.match( /Chrome\/(.*)Edge\/([\d.]*)+/) )?browser="您使用的浏览器是Edge,版本为:"+Browser[2]:
+	( Browser = us.match( /QQBrowser\/+([\d.]*)+/) )?browser="您使用的浏览器是QQBrowser,版本为:"+Browser[1]:
+	( Browser = us.match( /Chrome\/+([\d.]*)+/) )?browser="您使用的浏览器是Chrome,版本为:"+Browser[1]:
+	( Browser = us.match( /Firefox\/+([\d.]*)+/) )?browser="您使用的浏览器是Firefox,版本为:"+Browser[1]:0;
+})(navigator.userAgent)
+
 function Basc(agrs){
 	this.element = [];//创建一个数组
 	if(typeof(agrs) == "object"){
@@ -281,11 +291,11 @@ Basc.prototype.mouseover = function(fn){
 	return this;
 };
 
-//获取和设置html
+//获取和设置html、标签和文字
 Basc.prototype.html = function(args){
 	for(var i = 0; i < this.element.length;i++){
 		if(typeof(args) =="string" && args != undefined){
-			this.element[i].innerText = args
+			this.element[i].innerHTML = args
 		}else{
 			return this.element[i].innerHTML;
 		}
@@ -293,8 +303,20 @@ Basc.prototype.html = function(args){
 	return this;
 };
 
+//获取和设置text、纯文本
+Basc.prototype.text = function(args){
+	for(var i = 0; i < this.element.length;i++){
+		if(typeof(args) =="string" && args != undefined){
+			this.element[i].innerText = args
+		}else{
+			return this.element[i].innerText;
+		}
+	}
+	return this;
+};
+
 //封装hover
-Basc.prototype.hover =function(fn,fn1){
+Basc.prototype.hover = function(fn,fn1){
 	for(var i = 0; i < this.element.length; i++){
 		addEvent(this.element[i],"mouseover",fn);
 		addEvent(this.element[i],"mouseout",fn1);
@@ -303,7 +325,7 @@ Basc.prototype.hover =function(fn,fn1){
 };
 
 //封装show
-Basc.prototype.show =function(){
+Basc.prototype.show = function(){
 	for(var i = 0; i < this.element.length; i++){
 		this.element[i].style.display = "block";
 	}
@@ -311,12 +333,54 @@ Basc.prototype.show =function(){
 };
 
 //封装hide
-Basc.prototype.hide =function(){
+Basc.prototype.hide = function(){
 	for(var i = 0; i < this.element.length; i++){
 		this.element[i].style.display = "none";
 	}
 	return this;
 };
+
+//获取元素宽度、包括边框
+Basc.prototype.offsetWidth = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].offsetWidth;
+	}
+	// return this;
+};
+//获取元素高度、包括边框
+Basc.prototype.offsetHeight = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].offsetHeight;
+	}
+	// return this;
+};
+
+//获取元素宽度、不包括边框
+Basc.prototype.width = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].clientWidth;
+	}
+};
+//获取元素高度、不包括边框
+Basc.prototype.height = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].clientHeight;
+	}
+};
+
+//获取元素宽度、不包括边框
+Basc.prototype.clientWidth = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].clientWidth;
+	}
+};
+//获取元素高度、不包括边框
+Basc.prototype.clientHeight = function(){
+	for(var i = 0; i < this.element.length; i++){
+		return this.element[i].clientHeight;
+	}
+};
+
 
 //现代事件绑定
 function addEvent(obj,Events,fn){
@@ -342,6 +406,23 @@ function getEvent(event){
 	return e =  event || window.event;
 };
 
+window.onresize = function(obj){
+	size(obj);
+}
+function size(obj){
+	console.log(obj.element[0])
+	// if(obj!=""){
+	// 	aa = obj
+	// }
+	// var thisObj = (obj!="")?obj:aa;
+	// console.log(thisObj)
+
+
+
+
+	// console.log("宽"+document.documentElement.clientWidth)
+	// console.log("高"+document.documentElement.clientHeight)
+}
 //排序
 	// Basc.prototype.sort = function(arr){
 	// 	for(var i = 0;i < arr.length;i++){
