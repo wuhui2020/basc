@@ -180,9 +180,9 @@ Basc.prototype.find = function(elem){
 			default:
 				var tags = this.getTagName(elem,this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
+					console.log(tags)
 					childNode.push(tags[i]);
 				};
-				return this;
 			break;
 		};
 	}
@@ -222,6 +222,22 @@ Basc.prototype.eq = function(num){
 	this.element.push(temp);
 	return this;
 };
+
+//获取数组中第一元素
+Basc.prototype.first = function(){
+	var temp = this.element[0];
+	this.element = [];
+	this.element.push(temp);
+	return this;
+}
+
+//获取数组中最后一个元素
+Basc.prototype.last = function(){
+	var temp = this.element[this.element.length - 1];
+	this.element = [];
+	this.element.push(temp);
+	return this;
+}
 
 //获取元素索引
 Basc.prototype.index = function(){
@@ -315,6 +331,13 @@ Basc.prototype.text = function(args){
 	return this;
 };
 
+//获取input值
+Basc.prototype.val = function(){
+	for(var i = 0; i < this.element.length;i++){
+		return this.element[i].value;
+	}
+};
+
 //封装hover
 Basc.prototype.hover = function(fn,fn1){
 	for(var i = 0; i < this.element.length; i++){
@@ -381,6 +404,22 @@ Basc.prototype.clientHeight = function(){
 	}
 };
 
+//事件绑定 ---------这种写法应该不对，现暂时这样写---------------
+Basc.prototype.on = function(Events,func){
+	for(var i = 0; i < this.element.length; i++){
+		// console.log(this.element[i])
+		addEvent(this.element[i],Events,func)
+	}
+	return this;
+}
+//解除事件绑定
+Basc.prototype.off = function(Events,func){
+	for(var i = 0; i < this.element.length; i++){
+		removeEvent(this.element[i],Events,func)
+	}
+	return this;
+}
+//---------------------end------------------------------------------
 
 //现代事件绑定
 function addEvent(obj,Events,fn){
@@ -406,37 +445,15 @@ function getEvent(event){
 	return e =  event || window.event;
 };
 
-window.onresize = function(obj){
-	size(obj);
+//居中显示
+function cneter(obj){
+	var docEleCli = document.documentElement;
+	obj.element[0].style.left = ( docEleCli.clientWidth - obj.width() )/2 + "px";
+	obj.element[0].style.top = ( docEleCli.clientHeight - obj.height() )/2 + "px";
 }
-function size(obj){
-	console.log(obj.element[0])
-	// if(obj!=""){
-	// 	aa = obj
-	// }
-	// var thisObj = (obj!="")?obj:aa;
-	// console.log(thisObj)
 
 
-
-
-	// console.log("宽"+document.documentElement.clientWidth)
-	// console.log("高"+document.documentElement.clientHeight)
-}
-//排序
-	// Basc.prototype.sort = function(arr){
-	// 	for(var i = 0;i < arr.length;i++){
-	// 		for(var j = 0 ; j < arr.length - (1 + i); j++){
-	// 			if(arr[j] > arr[j+1]){
-	// 				var temp = arr[j]
-	// 				arr[j] = arr[j+1]
-	// 				arr[j+1] = temp;
-	// 			}
-	// 		}
-	// 	};
-	// 	return arr;
-	// };
-	
+//==================================小方法----START===============================================	
 //排序
 function sort(arr){
 	for(var i = 0;i < arr.length;i++){
@@ -450,6 +467,13 @@ function sort(arr){
 	};
 	return arr;
 };
+
+//去掉前后空格
+function trim(str){
+	return str.replace(/(^\s*)|(\s*$)/g,"");
+}
+//==================================小方法----END===============================================	
+
 
 //扩展
 Basc.prototype.extend = function(fnName,func){

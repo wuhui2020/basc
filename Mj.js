@@ -1,7 +1,3 @@
 $(function(){
 	
-	
-
-	// console.log(window)
-	
 })
