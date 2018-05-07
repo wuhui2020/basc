@@ -6,6 +6,7 @@
 (function(us){
 	window.browser;
 	var Browser;
+	//这只测试了IE10
 	( Browser = us.match( /Chrome\/(.*)Edge\/([\d.]*)+/) )?browser="您使用的浏览器是Edge,版本为:"+Browser[2]:
 	( Browser = us.match( /QQBrowser\/+([\d.]*)+/) )?browser="您使用的浏览器是QQBrowser,版本为:"+Browser[1]:
 	( Browser = us.match( /Chrome\/+([\d.]*)+/) )?browser="您使用的浏览器是Chrome,版本为:"+Browser[1]:
@@ -108,9 +109,9 @@ function Basc(agrs){
 	}
 };
 
-Basc.prototype.onload = function(fn){
+Basc.prototype.onload = function(func){
 	window.onload = function(){
-		fn();
+		func();
 	}
 }
 
@@ -180,7 +181,6 @@ Basc.prototype.find = function(elem){
 			default:
 				var tags = this.getTagName(elem,this.element[i]);
 				for(var i = 0; i < tags.length; i++ ){
-					console.log(tags)
 					childNode.push(tags[i]);
 				};
 			break;
@@ -292,17 +292,17 @@ Basc.prototype.removeClass = function(classname){
 	return this
 }
 //点击事件
-Basc.prototype.click = function(fn){
+Basc.prototype.click = function(func){
 	for(var i = 0; i < this.element.length; i++ ){
-		this.element[i].onclick = fn;
+		this.element[i].onclick = func;
 	}
 	return this;
 };
 
 //点击事件
-Basc.prototype.mouseover = function(fn){
+Basc.prototype.mouseover = function(func){
 	for(var i = 0; i < this.element.length; i++ ){
-		this.element[i].onmouseover = fn;
+		this.element[i].onmouseover = func;
 	}
 	return this;
 };
@@ -338,11 +338,18 @@ Basc.prototype.val = function(){
 	}
 };
 
-//封装hover
-Basc.prototype.hover = function(fn,fn1){
+Basc.prototype.append = function(elements){
 	for(var i = 0; i < this.element.length; i++){
-		addEvent(this.element[i],"mouseover",fn);
-		addEvent(this.element[i],"mouseout",fn1);
+		this.element[i].innerHTML = elements;
+	}
+}
+
+
+//封装hover
+Basc.prototype.hover = function(func,func1){
+	for(var i = 0; i < this.element.length; i++){
+		addEvent(this.element[i],"mouseover",func);
+		addEvent(this.element[i],"mouseout",func1);
 	}
 	return this;
 };
@@ -404,23 +411,25 @@ Basc.prototype.clientHeight = function(){
 	}
 };
 
-//事件绑定 ---------这种写法应该不对，现暂时这样写---------------
+//事件绑定 
 Basc.prototype.on = function(Events,func){
 	for(var i = 0; i < this.element.length; i++){
-		// console.log(this.element[i])
-		addEvent(this.element[i],Events,func)
+		this.element[i]['on'+Events] = func;
 	}
 	return this;
 }
 //解除事件绑定
-Basc.prototype.off = function(Events,func){
+Basc.prototype.off = function(Events){
 	for(var i = 0; i < this.element.length; i++){
-		removeEvent(this.element[i],Events,func)
+		this.element[i]['on'+Events] = '';
 	}
 	return this;
 }
-//---------------------end------------------------------------------
 
+
+	
+
+//==================================小方法----START===============================================	
 //现代事件绑定
 function addEvent(obj,Events,fn){
 	// attachEvent()添加事件  detachEvent()删除事件 //IE
@@ -431,6 +440,7 @@ function addEvent(obj,Events,fn){
 		obj.attachEvent('on'+Events,fn)
 	}
 };
+
 //删除现代事件绑定
 function removeEvent(obj,Events,fn){
 	if(obj.removeEventListener){
@@ -438,7 +448,7 @@ function removeEvent(obj,Events,fn){
 	}else if(obj.detacEvent){
 		obj.detacEvent('on'+Events,fn)
 	}
-};	
+};
 
 //获取event对像
 function getEvent(event){
@@ -452,8 +462,6 @@ function cneter(obj){
 	obj.element[0].style.top = ( docEleCli.clientHeight - obj.height() )/2 + "px";
 }
 
-
-//==================================小方法----START===============================================	
 //排序
 function sort(arr){
 	for(var i = 0;i < arr.length;i++){
@@ -472,10 +480,11 @@ function sort(arr){
 function trim(str){
 	return str.replace(/(^\s*)|(\s*$)/g,"");
 }
+
 //==================================小方法----END===============================================	
 
 
-//扩展
+//扩展方法
 Basc.prototype.extend = function(fnName,func){
 	Basc.prototype[fnName] = func;
 }
