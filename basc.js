@@ -212,11 +212,17 @@ Basc.prototype.childNodes = function(){
 
 //获取第几个元素 并返当前元素
 Basc.prototype.getElement = function(num){
+	if(num < 0 || num > this.element.length){
+		return null;
+	};
 	return this.element[num];
 };
 
 //获取第几个元素 并返回Basc对像
 Basc.prototype.eq = function(num){
+	if(num < 0 || num > this.element.length){
+		return null;
+	};
 	var temp = this.element[num]
 	this.element =[];
 	this.element.push(temp);
@@ -338,12 +344,37 @@ Basc.prototype.val = function(){
 	}
 };
 
+//向目标元素内后面追加元素
 Basc.prototype.append = function(elements){
-	for(var i = 0; i < this.element.length; i++){
-		this.element[i].innerHTML = elements;
-	}
+	 if(elements.charAt(0) == "<" && elements.charAt(elements.length-1) == ">" && elements.length > 3){
+	 	for(var i = 0; i < this.element.length; i++){
+	 		if(trim(this.element[i].innerHTML) != ""){
+	 			this.element[i].innerHTML = trim(this.element[i].innerHTML) + elements;
+	 		}else{
+	 			this.element[i].innerHTML = elements;
+	 		}
+		}
+	 }else{
+	 	console.error(elements)
+	 }
+	return this;
 }
 
+//向目标元素内前面追加元素
+Basc.prototype.prepend = function(elements){
+	 if(elements.charAt(0) == "<" && elements.charAt(elements.length-1) == ">" && elements.length > 3){
+	 	for(var i = 0; i < this.element.length; i++){
+	 		if(trim(this.element[i].innerHTML) != ""){
+	 			this.element[i].innerHTML =  elements + trim(this.element[i].innerHTML);
+	 		}else{
+	 			this.element[i].innerHTML = elements;
+	 		}
+		}
+	 }else{
+	 	console.error(elements)
+	 }
+	return this;
+}
 
 //封装hover
 Basc.prototype.hover = function(func,func1){

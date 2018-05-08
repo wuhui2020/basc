@@ -7,6 +7,8 @@ Basc.prototype.extend("drag",function(){
 			var e = getEvent(event);
 			var lx = e.clientX - _this.offsetLeft
 			var ly = e.clientY - _this.offsetTop
+			//setCapture可以将鼠标事件锁定在指定的元素上，当元素捕获了鼠标事件后，该事件只能作用在当前元素上
+			//releaseCapture()可以为指定的元素解除事件锁定。它们俩必须成对使用
 			if ( _this.setCapture ) {
                 _this.setCapture();
             };
@@ -41,6 +43,7 @@ Basc.prototype.extend("drag",function(){
 			function up(){
 				removeEvent(document,"mousemove",move);
 				removeEvent(document,"mouseup",up);
+				//releaseCapture()可以为指定的元素解除事件锁定
 				if ( _this.releaseCapture ) {
                 	_this.releaseCapture();
             	}
