@@ -254,10 +254,16 @@ Basc.prototype.index = function(){
 Basc.prototype.css = function(attr,value){
 	for(var i = 0; i<this.element.length; i++){
 		if(arguments.length == 1){
-			if(window.getComputedStyle){
-				return getComputedStyle(this.element[i],null)[attr]; //W3C
-			}else if(window.currentStyle){
-				return currentStyle[attr];   //IE 
+			if(typeof(attr) == "string"){
+				if(window.getComputedStyle){
+					return getComputedStyle(this.element[i],null)[attr]; //W3C
+				}else if(window.currentStyle){
+					return currentStyle[attr];   //IE 
+				}
+			}else if(typeof(attr) == "object"){
+				for(_i in attr){
+					this.element[i].style[_i] = attr[_i];
+				}
 			}
 		}else if(arguments.length == 2){
 			this.element[i].style[attr] = value;

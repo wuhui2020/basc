@@ -2,18 +2,8 @@
 	padding:0;
 	margin: 0;
 }
-#box{
+#pid{
 	width:300px;
-	height: 300px;
-	background: red;
-}
-#box1{
-	width:200px;
-	height: 200px;
-	background: blue;
-}
-#box2{
-	width:100px;
-	height: 100px;
-	background: black;
+	height: 20px;
+	font-size: 16px;
 }
