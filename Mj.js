@@ -1,6 +1,6 @@
 $(function(){
 	
-	console.log($("#pid").css("fontSize"))
 	
+	$(".box").eq(1).css("color","red");
 	
 })

@@ -6,7 +6,7 @@
 (function(us){
 	window.browser;
 	var Browser;
-	//这只测试了IE10
+	//这只测试了Edge
 	( Browser = us.match( /Chrome\/(.*)Edge\/([\d.]*)+/) )?browser="您使用的浏览器是Edge,版本为:"+Browser[2]:
 	( Browser = us.match( /QQBrowser\/+([\d.]*)+/) )?browser="您使用的浏览器是QQBrowser,版本为:"+Browser[1]:
 	( Browser = us.match( /Chrome\/+([\d.]*)+/) )?browser="您使用的浏览器是Chrome,版本为:"+Browser[1]:
@@ -212,7 +212,7 @@ Basc.prototype.childNodes = function(){
 
 //获取第几个元素 并返当前元素
 Basc.prototype.getElement = function(num){
-	if(num < 0 || num > this.element.length){
+	if(num < 0 || num > this.element.length - 1){
 		return null;
 	};
 	return this.element[num];
@@ -220,7 +220,7 @@ Basc.prototype.getElement = function(num){
 
 //获取第几个元素 并返回Basc对像
 Basc.prototype.eq = function(num){
-	if(num < 0 || num > this.element.length){
+	if(num < 0 || num > this.element.length - 1){
 		return null;
 	};
 	var temp = this.element[num]
