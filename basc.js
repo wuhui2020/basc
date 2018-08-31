@@ -25,85 +25,140 @@ function Basc(agrs){
 			var elements = agrs.split(" ");
 			var childElement = [];
 			var node = [];
-			for(var i = 0; i < elements.length; i++){
-				if(node.length == 0){
-					node.push(document);
+			if(agrs.charAt(0) != "<" && agrs.charAt(agrs.length-1) != ">"){
+				for(var i = 0; i < elements.length; i++){
+					if(node.length == 0){
+						node.push(document);
+					}
+					switch(elements[i].charAt(0)){
+						case "#":
+							childElement = [];                   
+							childElement.push( this.getId( elements[i].substring(1) ) );
+							node = childElement;
+						break;
+						case ".":
+							childElement = [];
+							for(var k = 0; k < node.length; k++){
+								tags = this.getClass(elements[i].substring(1),node[k]);
+								for(var j = 0; j < tags.length; j++){
+									if(tags[j].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
+										var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
+										for(var j = 0; j < classArr.length; j++){
+											if(classArr[j] == agrs.substring(1)){
+												machclass.push(tags[i]);
+											}
+										};
+										node = machclass;
+									}else{
+										if(tags[j].className == elements[i].substring(1)){
+											onlyclass.push(tags[j]);
+										}
+										node = onlyclass;
+									};
+								};
+							}
+							childElement = machclass.concat(onlyclass);
+						break;
+						default:
+							childElement = [];
+							for(var k = 0; k < node.length; k++){
+								tags = this.getTagName(elements[i],node[k]);
+								for(var j = 0; j < tags.length; j++ ){
+									childElement.push(tags[j]);
+								};
+							}
+							node = childElement;
+					}
 				}
-				switch(elements[i].charAt(0)){
-					case "#":
-						childElement = [];                   
-						childElement.push( this.getId( elements[i].substring(1) ) );
-						node = childElement;
+				this.element = childElement;
+				return this;
+			}else{
+				//创建元素
+				this.element = document.createElement( agrs.substring( 1, agrs.indexOf(" ") ) );
+				if(/(class)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("class"));
+					str = str.substring(_index(str) + 1);
+					this.element.setAttribute("class",str.substring(0,_index(str)) );
+				}
+				if(/(id)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("id"));
+					str = str.substring(_index(str) + 1);
+					this.element.setAttribute("id",str.substring( 0,_index(str) ) );
+				}
+				if(/(style)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("style"));
+					str = str.substring(_index(str) + 1);
+					var str1 = str.substring(0,_index(str))
+					var arr = str1.split(";")
+					for(var i = 0; i < arr.length; i++){
+						var stylearr = arr[i].split(":");
+						this.element.style[stylearr[0]] = stylearr[1];
+					}
+				}
+				return this.element;
+			}
+
+		}else{
+
+			if(agrs.charAt(0) != "<" && agrs.charAt(agrs.length-1) != ">"){
+				switch(agrs.charAt(0)){
+					case "#":                      
+						this.element.push( this.getId( agrs.substring(1) ) );
+						return this;
 					break;
 					case ".":
-						childElement = [];
-						for(var k = 0; k < node.length; k++){
-							tags = this.getClass(elements[i].substring(1),node[k]);
-							for(var j = 0; j < tags.length; j++){
-								if(tags[j].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
-									var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
-									for(var j = 0; j < classArr.length; j++){
-										if(classArr[j] == agrs.substring(1)){
-											machclass.push(tags[i]);
-										}
-									};
-									node = machclass;
-								}else{
-									if(tags[j].className == elements[i].substring(1)){
-										onlyclass.push(tags[j]);
+						tags = this.getClass(agrs.substring(1));
+						for(var i = 0; i < tags.length; i++){
+							if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
+								var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
+								for(var j = 0; j < classArr.length; j++){
+									if(classArr[j] == agrs.substring(1)){
+										machclass.push(tags[i]);
 									}
-									node = onlyclass;
 								};
-							};
-						}
-						childElement = machclass.concat(onlyclass);
-					break;
-					default:
-						childElement = [];
-						for(var k = 0; k < node.length; k++){
-							tags = this.getTagName(elements[i],node[k]);
-							for(var j = 0; j < tags.length; j++ ){
-								childElement.push(tags[j]);
-							};
-						}
-						node = childElement;
-				}
-			}
-			this.element = childElement;
-			return this;
-		}else{
-			switch(agrs.charAt(0)){
-				case "#":                      
-					this.element.push( this.getId( agrs.substring(1) ) );
-					return this;
-				break;
-				case ".":
-					tags = this.getClass(agrs.substring(1));
-					for(var i = 0; i < tags.length; i++){
-						if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "").indexOf(" ") != -1 ){
-							var classArr = tags[i].className.replace(/(^\s*)|(\s*$)/g, "").split(" ");
-							for(var j = 0; j < classArr.length; j++){
-								if(classArr[j] == agrs.substring(1)){
-									machclass.push(tags[i]);
+							}else{
+								if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs.substring(1)){
+									onlyclass.push(tags[i]);
 								}
 							};
-						}else{
-							if(tags[i].className.replace(/(^\s*)|(\s*$)/g, "") == agrs.substring(1)){
-								onlyclass.push(tags[i]);
-							}
 						};
-					};
-					this.element = machclass.concat(onlyclass);
-					return this;
-				break;
-				default:
-					tags = this.getTagName(agrs);
-					for(var i = 0; i < tags.length; i++ ){
-						this.element.push(tags[i]);
-					};
-					return this;
+						this.element = machclass.concat(onlyclass);
+						return this;
+					break;
+					default:
+						tags = this.getTagName(agrs);
+						for(var i = 0; i < tags.length; i++ ){
+							this.element.push(tags[i]);
+						};
+						return this;
+				}
+			}else{
+				//创建元素
+				this.element = document.createElement(agrs.substring( 1, agrs.indexOf(" ") ) );
+				if(/(class)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("class"))
+					str = str.substring( _index(str) + 1 );
+					this.element.setAttribute("class",str.substring( 0,_index(str) ) );
+				}
+				if(/(id)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("id"));
+					str = str.substring( _index(str) + 1);
+					this.element.setAttribute("id",str.substring( 0,_index(str) ) );
+				}
+				if(/(style)/g.test(agrs)){
+					var str = agrs.substring( agrs.indexOf("style"));
+					str = str.substring( _index(str) + 1 );
+					var str1 = str.substring( 0,_index(str ) );
+					var arr = str1.split(";")
+					for(var i = 0; i < arr.length; i++){
+						var stylearr = arr[i].split(":");
+						this.element.style[stylearr[0]] = stylearr[1];
+					}
+				}
+				return this;
 			}
 		}
+
 	}else if(typeof agrs == 'function'){
 		this.onload(agrs);
 	}
@@ -352,17 +407,27 @@ Basc.prototype.val = function(){
 
 //向目标元素内后面追加元素
 Basc.prototype.append = function(elements){
-	 if(elements.charAt(0) == "<" && elements.charAt(elements.length-1) == ">" && elements.length > 3){
-	 	for(var i = 0; i < this.element.length; i++){
+	if(typeof elements == "string"){
+		if(elements.charAt(0) == "<" && elements.charAt(elements.length-1) == ">" && elements.length > 3){
+		 	for(var i = 0; i < this.element.length; i++){
+		 		if(trim(this.element[i].innerHTML) != ""){
+		 			this.element[i].innerHTML = trim(this.element[i].innerHTML) + elements;
+		 		}else{
+		 			this.element[i].innerHTML = elements;
+		 		}
+			}
+		}else{
+		 	console.error(elements)
+		}
+	}else if(typeof elements == "object"){
+		for(var i = 0; i < this.element.length; i++){
 	 		if(trim(this.element[i].innerHTML) != ""){
-	 			this.element[i].innerHTML = trim(this.element[i].innerHTML) + elements;
+	 			this.element[i].append(elements);
 	 		}else{
-	 			this.element[i].innerHTML = elements;
+	 			this.element[i].append(elements);
 	 		}
 		}
-	 }else{
-	 	console.error(elements)
-	 }
+	}
 	return this;
 }
 
@@ -518,6 +583,15 @@ function trim(str){
 	return str.replace(/(^\s*)|(\s*$)/g,"");
 }
 
+function _index(str){
+	var Index;
+	if(str.indexOf("'") != -1){
+		Index = str.indexOf("'")
+	}else if(str.indexOf('"') != -1){
+		Index = str.indexOf('"')
+	}
+	return Index
+}
 //==================================小方法----END===============================================	
 
 
