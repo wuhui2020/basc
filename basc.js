@@ -577,7 +577,24 @@ function sort(arr){
 	};
 	return arr;
 };
-
+//多维数遍利及排序	flag=true表示按数字排序 否则按字母排序
+var sortArray = []
+function EachArr(arrObj,flag){
+	arrObj.forEach(function(obj,i){
+		if(typeof obj == 'object'){
+			EachArr(obj);
+		}else if(typeof obj == 'number'){
+			if(sortArray.indexOf(obj) == -1){
+				sortArray.push(obj);
+			}
+		}
+	})
+	if(flag){
+		return sortArray.sort(function(a,b){return a - b})
+	}else{
+		return sortArray.sort()
+	}
+}
 //去掉前后空格
 function trim(str){
 	return str.replace(/(^\s*)|(\s*$)/g,"");
