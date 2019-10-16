@@ -577,22 +577,24 @@ function sort(arr){
 	};
 	return arr;
 };
-//多维数遍利及排序	flag=true表示按数字排序 否则按字母排序
+//多维数遍利及排序 flag='number'表示按数字排序 flag='letter'表示按字母排序 否则不排序
 var sortArray = []
 function EachArr(arrObj,flag){
 	arrObj.forEach(function(obj,i){
 		if(typeof obj == 'object'){
-			EachArr(obj);
+			EachArr(obj,flag);
 		}else if(typeof obj == 'number'){
 			if(sortArray.indexOf(obj) == -1){
 				sortArray.push(obj);
 			}
 		}
 	})
-	if(flag){
-		return sortArray.sort(function(a,b){return a - b})
+	if(flag == 'number'){
+		return sortArray.sort(function(a,b){return a - b});
+	}else if(flag == 'letter'){
+		return sortArray.sort();
 	}else{
-		return sortArray.sort()
+		return sortArray;
 	}
 }
 //去掉前后空格
